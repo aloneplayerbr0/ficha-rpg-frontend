@@ -348,7 +348,7 @@ document.getElementById('logoutBtn').onclick = () => {
 
 
   // ======== API (Login + Sync) ========
-  const API_URL = 'http://localhost:3000';
+  const API_URL = 'https://ficha-rpg-2i0s.onrender.com/';
 
   function getToken(){ return localStorage.getItem('token'); }
   function getRole(){ return localStorage.getItem('role'); }
