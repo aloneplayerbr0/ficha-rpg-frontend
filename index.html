@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title id="appTitle">Ficha D&D 5e</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-controls">
+      <h1 id="appTitle" data-i18n="appTitle">Ficha D&D 5e</h1>
+      <div class="char-selector">
+        <label data-i18n="charSelect">Personagem:</label>
+        <select id="characterSelect"></select>
+        <button id="addCharacterBtn">+</button>
+        <button id="deleteCharacterBtn" class="danger">-</button>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="openSearch" data-i18n="search5e">Pesquisar Open5e</button>
+      <button id="openStoryModal" data-i18n="story">História</button>
+      <button id="exportBtn" data-i18n="export">Exportar</button>
+      <input type="file" id="importFile" accept=".json" style="display: none;">
+      <button id="importBtn" data-i18n="import">Importar</button>
+      <button id="printBtn" data-i18n="print">Imprimir</button>
+      <button id="resetBtn" class="danger" data-i18n="reset">Limpar</button>
+      <button id="rollDice" class="dice-roller" data-i18n="diceRoller">Rolar Dados</button>
+      <button id="langToggle" data-i18n="langEN">EN</button>
+      <button id="toggleTheme" class="theme-toggle">Tema</button>
+      <button id="logoutBtn" data-i18n="logout">Sair</button>
+    </div>
+  </header>
+
+  <section id="gmPanel" class="section-container gm-panel" style="display:none; margin-top: 10px;">
+    <h2>Painel do Mestre — Visão Geral dos Jogadores</h2>
+    <div id="gmPlayerCardsContainer" class="gm-player-cards-container">
+      </div>
+  </section>
+
+  <main id="characterSheet" style="display:none;">
+    <div class="main-content">
+      <section class="top-section">
+        <div class="section-container basic-info">
+          <div class="basic-info-grid">
+            <label><span data-i18n="charName">Nome do Personagem:</span> <input type="text" id="charName"></label>
+            <label><span data-i18n="className">Classe e Nível:</span> <input type="text" id="className"></label>
+            <label><span data-i18n="background">Antecedente:</span> <input type="text" id="background"></label>
+            <label><span data-i18n="playerName">Nome do Jogador:</span> <input type="text" id="playerName"></label>
+            <label><span data-i18n="race">Raça:</span> <input type="text" id="race"></label>
+            <label><span data-i18n="alignment">Tendência:</span> <input type="text" id="alignment"></label>
+            <label><span data-i18n="xp">XP:</span> <input type="number" id="xp"></label>
+          </div>
+          
+          <div class="character-photo">
+            <label for="charPhotoInput" data-i18n="photo">Foto:</label>
+            <img id="charPhoto" src="" alt="Foto do Personagem" class="character-image" style="display: none;">
+            <input type="file" id="charPhotoInput" accept="image/*">
+          </div>
+        </div>
+      </section>
+
+      <div class="grid-container">
+        <div class="left-column">
+          <section class="abilities-section section-container">
+            <h2 data-i18n="abilities">Atributos</h2>
+            <div class="abilities-grid">
+              <div class="ability-score">
+                <label data-i18n="str">Força</label>
+                <input type="number" id="str">
+                <span class="mod" id="strMod"></span>
+              </div>
+              <div class="ability-score">
+                <label data-i18n="dex">Destreza</label>
+                <input type="number" id="dex">
+                <span class="mod" id="dexMod"></span>
+              </div>
+              <div class="ability-score">
+                <label data-i18n="con">Constituição</label>
+                <input type="number" id="con">
+                <span class="mod" id="conMod"></span>
+              </div>
+              <div class="ability-score">
+                <label data-i18n="int">Inteligência</label>
+                <input type="number" id="int">
+                <span class="mod" id="intMod"></span>
+              </div>
+              <div class="ability-score">
+                <label data-i18n="wis">Sabedoria</label>
+                <input type="number" id="wis">
+                <span class="mod" id="wisMod"></span>
+              </div>
+              <div class="ability-score">
+                <label data-i18n="cha">Carisma</label>
+                <input type="number" id="cha">
+                <span class="mod" id="chaMod"></span>
+              </div>
+            </div>
+            <div class="misc-stats">
+              <label><span data-i18n="inspiration">Inspiração</span> <input type="checkbox" id="inspiration"></label>
+              <label><span data-i18n="profBonus">Bônus de Proficiência</span> <input type="number" id="profBonus" readonly></label>
+            </div>
+          </section>
+
+          <section class="section-container saves-and-skills">
+            <h2 data-i18n="savingThrows">Testes de resistencia</h2>
+            <ul id="savingThrowsList"></ul>
+            <h2 data-i18n="skills">Perícias</h2>
+            <ul id="skillsList"></ul>
+            <label><span data-i18n="passivePerception">Percepção Passiva:</span> <span id="passivePerception"></span></label>
+          </section>
+        </div>
+
+        <div class="center-column">
+          <section class="section-container combat-stats-container">
+            <div class="combat-stats">
+              <div class="stat-box">
+                <span data-i18n="ac">CA</span>
+                <input type="number" id="ac">
+              </div>
+              <div class="stat-box">
+                <span data-i18n="initiative">Iniciativa</span>
+                <span id="initiativeCalc"></span>
+                <label>Misc: <input type="number" id="initiativeMisc"></label>
+              </div>
+              <div class="stat-box">
+                <span data-i18n="speed">Deslocamento</span>
+                <input type="number" id="speed">
+              </div>
+            </div>
+            <div class="hp-info">
+              <h2 data-i18n="hp">Pontos de Vida</h2>
+              <label><span data-i18n="hpMax">Total de PV</span> <input type="number" id="hpMax"></label>
+              <label><span data-i18n="hpCurrent">PV Atuais</span> <input type="number" id="hpCurrent"></label>
+              <label><span data-i18n="hpTemp">PV Temporários</span> <input type="number" id="hpTemp"></label>
+              <label><span data-i18n="hitDice">Dado de Vida</span> <input type="text" id="hitDice"></label>
+              <div class="death-saves">
+                <h3 data-i18n="deathSaves">Teste contra Morte</h3>
+                <div>
+                  <span data-i18n="successes">Sucessos:</span>
+                  <input type="checkbox" id="ds_s_0">
+                  <input type="checkbox" id="ds_s_1">
+                  <input type="checkbox" id="ds_s_2">
+                </div>
+                <div>
+                  <span data-i18n="failures">Fracassos:</span>
+                  <input type="checkbox" id="ds_f_0">
+                  <input type="checkbox" id="ds_f_1">
+                  <input type="checkbox" id="ds_f_2">
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-container attacks-section">
+            <h2 data-i18n="attacks">Ataques</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="attackName">Nome</th>
+                  <th data-i18n="attackBonus">Bônus</th>
+                  <th data-i18n="attackDmgType">Dano / Tipo</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="attacksBody"></tbody>
+            </table>
+            <button id="addAttack" data-i18n="add">Adicionar</button>
+          </section>
+
+          <section class="section-container equipment-section">
+            <h2 data-i18n="equipment">Equipamento</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="attackName">Nome</th>
+                  <th>Qtd</th>
+                  <th>Peso</th>
+                  <th data-i18n="invTotalWeight">Peso Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="invBody"></tbody>
+            </table>
+            <button id="addItem" data-i18n="addItem">Adicionar Item</button>
+            <div class="weight-info">
+              <label><span data-i18n="invTotalWeight">Peso Total:</span> <span id="invTotalWeight">0.0</span></label>
+              <label><span data-i18n="carryCap">Capacidade de Carga:</span> <span id="carryCap">0</span></label>
+            </div>
+          </section>
+        </div>
+
+        <div class="right-column">
+          <section class="section-container">
+            <label><h2 data-i18n="otherProfs">Outras Proficiências e Idiomas</h2></label>
+            <textarea id="profsLangs"></textarea>
+          </section>
+          <section class="section-container">
+            <h2 data-i18n="traits">Características</h2>
+            <textarea id="traits"></textarea>
+            <h2 data-i18n="ideals">Ideais</h2>
+            <textarea id="ideals"></textarea>
+            <h2 data-i18n="bonds">Vínculos</h2>
+            <textarea id="bonds"></textarea>
+            <h2 data-i18n="flaws">Defeitos</h2>
+            <textarea id="flaws"></textarea>
+            <h2 data-i18n="notes">Anotações</h2>
+            <textarea id="notes"></textarea>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="storyModal">
+    <div class="modal-content">
+      <header>
+        <h3 data-i18n="story">História do Personagem</h3>
+        <button class="close-btn" id="storyClose">&times;</button>
+      </header>
+      <div class="story-inputs">
+        <label><span data-i18n="age">Idade:</span> <input type="number" id="age"></label>
+        <label><span data-i18n="height">Altura:</span> <input type="text" id="height"></label>
+        <label><span data-i18n="weight">Peso:</span> <input type="text" id="weight"></label>
+        <label><span data-i18n="eyes">Olhos:</span> <input type="text" id="eyes"></label>
+        <label><span data-i18n="skin">Pele:</span> <input type="text" id="skin"></label>
+        <label><span data-i18n="hair">Cabelo:</span> <input type="text" id="hair"></label>
+        <h2 data-i18n="appearance">Aparência do Personagem</h2>
+        <textarea id="appearance"></textarea>
+        <h2 data-i18n="allies">Aliados & Organizações</h2>
+        <textarea id="allies"></textarea>
+        <h2 data-i18n="story">História do Personagem</h2>
+        <textarea id="storyline"></textarea>
+        <h2 data-i18n="additionalTraits">Características Adicionais & Traços</h2>
+        <textarea id="additionalTraits"></textarea>
+        <h2 data-i18n="treasure">Tesouro</h2>
+        <textarea id="treasure"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
